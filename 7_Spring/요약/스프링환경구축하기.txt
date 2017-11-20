@@ -1,0 +1,20 @@
+<스프링 프레임워크 환경 구축하기>
+ - 스프링 웹 MVC 프로그래밍을 위한 개발 환경 구축은 2가지 방법이 있음
+  1. 이클립스 기반의 스프링 전용 개발 툴인 STS(Spring Tool Suite)를 다운 설치
+	http://spring.io/tools/sts/all
+  2. 이클립스에 스프링 플러그인(STS)을 추가로 설치
+	http://projects.spring.io/spring-framework/
+	
+  * Spring 최신 라이브러리(4.4.2) 다운로드 가능한 사이트		  http://maven.springframework.org/release/org/springframework/spring/
+
+[이클립스에 스프링 플러그인 설치]
+ 1. 이클립스 실행 화면에서
+   help 메뉴 
+   > Eclipse Marketplace 메뉴 
+   > search 텝에서 'Spring Tool Suite' 입력하고 Go 클릭
+   > "Spring Tool Suite(STS) for Eclipse Luna RELEASE" 찾아서 
+   > install 버튼 클릭 
+   > Confirm 버튼 클릭 
+   > 'I accept .... ' 동의 클릭  
+   > finish 클릭
+   > 설치가 완료되면, 이클립스 재시작함

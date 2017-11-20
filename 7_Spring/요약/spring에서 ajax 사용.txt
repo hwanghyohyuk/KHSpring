@@ -1,0 +1,61 @@
+[Ajax/Java/Spring] Spring에서 Ajax로 JSON 데이터 넘기기
+
+
+1. Maven을 사용한다면 pom.xml에 다음과 같이 라이브러리를 추가하여 빌드해준다.
+
+<!-- JSON -->
+<dependency>
+    <groupid>net.sf.json-lib</groupid>
+    <artifactid>json-lib-ext-spring</artifactid>
+    <version>1.0.2</version>
+</dependency>
+
+
+2. JsonView를 빈등록한다.
+
+<!-- ajax JSON parsing -->
+<beans:bean id="jsonView" class="net.sf.json.spring.web.servlet.view.JsonView">
+<beans:bean id="viewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+    <beans:property name="order" value="0"></beans:property>
+</beans:bean>
+</beans:bean>
+
+
+3. 컨트롤러에서 데이터를 넘겨준다.
+
+@RequestMapping(value = "/json/jsonList.do")
+public ModelAndView outputJsonList(ModelAndView modelAndView) {
+    SomeDTO someData = someService.someMethod();
+     
+    Map map = new HashMap();
+    map.put("someData", someData);
+    map.put("strData", "strData");
+     
+    modelAndView.addAllObjects(map);
+ 
+    // Keypoint ! setViewName에 들어갈 String 파라미터는 JsonView bean 설정해줬던 id와 같아야 한다.
+    modelAndView.setViewName("jsonView");
+     
+    return modelAndView;
+}
+
+
+
+4. Javascript에서 ajax로 데이터를 요청해서 받아온다.
+
+$.ajax({
+    url : "/json/jsonList.do",
+    type : "POST",
+    dataType: "json",
+    success : function(data) {
+        console.log("data.someData : " + data.someData);
+        console.log("data.strData : " + data.strData);
+    },
+    error : function(jqXHR, textStatus, errorThrown) {
+        alert("에러 발생~~ \n" + textStatus + " : " + errorThrown);
+    }
+});
+
+
+
+   

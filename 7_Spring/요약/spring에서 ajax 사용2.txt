@@ -1,0 +1,77 @@
+spring 프레임워크에서 간단하게 ajax(json data) 사용법
+
+pom.xml
+
+<!-- Json -->           
+<groupId>net.sf.json-lib</groupId>       
+    <artifactId>json-lib</artifactId>       
+    <version>2.4</version>       
+    <classifier>jdk15</classifier>   
+</dependency>
+        
+<dependency>
+    <groupId>org.codehaus.jackson</groupId>
+    <artifactId>jackson-mapper-asl</artifactId>
+    <version>1.9.2</version>
+</dependency>
+
+////////////////////////////////////////////////////////////
+
+DispatcherServlet XML 설정파일
+
+<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+<property name="contentType" value="application/json;charset=UTF-8"> </property>
+</bean>
+
+
+////////////////////////////////////////////////////////////
+
+web.xml
+
+<servlet-mapping>
+<servlet-name>action</servlet-name>
+<url-pattern>*.do</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+<servlet-name>action</servlet-name>
+<url-pattern>*.ajax</url-pattern>
+</servlet-mapping>
+
+////////////////////////////////////////////////////////////
+
+Controller.java
+
+@RequestMapping(value = "/login/selectLogin.ajax")
+public ModelAndView login(CommandMap commandMap) throws Exception {
+Map resultMap = new HashMap();
+resultMap.put("result", 1);
+ModelAndView modelAndView = new ModelAndView("jsonView", resultMap);
+
+return modelAndView;
+}
+////////////////////////////////////////////////////////////
+
+javascript
+
+function login() {
+jQuery.ajax(
+{async : true
+,type : "post"
+,url : "/login/selectLogin.ajax"
+,dataType : "json"
+,data: $("#loginFrm").serialize()
+,success : function(jsonData) {
+var _login_result = jsonData.result;
+if(_login_result == 1){
+alert("로그인 성공!\n환영합니다.");
+$("#loginFrm").attr("action", "/login/loginSuccess.do").submit();
+} else {
+alert("로그인 실패하였습니다. 아이디와 비밀번호를 재확인해 주세요.");
+}		
+}
+,error:	function(request,status,error){
+alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+}
+});
+}

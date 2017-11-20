@@ -1,0 +1,207 @@
+<스프링 MVC 프로젝트 작성>
+1. 프로젝트 생성
+2. 패키지 생성과 컨트롤러 클래스 작성
+3. 폴더 및 뷰 생성
+4. 웹 애플리케이션 설정파일과 스프링 설정파일 설정
+5. 실행
+//----------------------------------------------
+
+1. 프로젝트 생성
+ => JAVA EE 선택 확인
+ => FILE > NEW > DYNAMIC WEB PROJECT 선택
+	프로젝트명 : springStudy
+	> next > next > 
+	generator web.xml..... 항목 체크함
+	> finish
+ => 생성된 프로젝트명 위에서 마우스 오른쪽 클릭
+	> spring tools 클릭
+	> add Spring Project Nature 클릭함
+ => 프로젝트명 아이콘에 's'자가 나타나며, 
+    Project Explorer 뷰에서 spring elements 폴더가 추가됨
+ => WEB-INF/web.xml 파일 열기
+	> 디자인 탭에서
+	  id 속성의 값을 springStudy 로 수정함
+		id : 프로젝트명
+	> welcome-file 리스트도 사용할 파일 하나만 남기고 나머지는 삭제
+		index.jsp 만 남겨봄
+ => 프로젝트에서 스프링 프레임워크의 기능들을 사용하기 위해서
+	라이브러리 추가함
+	> WEB-INF/lib 폴더에 스프링 jar 파일과 프로그래밍에 필요한
+	  jar 파일들을 복사함
+ => 프로젝트를 Refresh 함
+//-----------------------------------------------
+
+2. 패키지 생성과 컨트롤러 클래스 작성
+	* 예제 : 'HelloWorld 실행' 앵커를 클릭하면, 컨트롤러에 의해
+		'Hello World Spring!!!' 문자열을 출력하는 프로그램
+ 
+ => 패키지 생성
+	> src 폴더 아래에 'hello.controller' 패키지 생성
+ => 컨트롤러 클래스 추가
+	> hello.controller 패키지에 클래스 파일 추가함
+	  클래스 파일명 : HelloWorldController.java
+ => 클래스명 위에서 엔터하여 빈 줄을 추가하고, 애노테이션 기입함
+	> @Cont 이라고 입력하고, ctrl + space 키 누름
+	> 자동완성 팝업창에서 @Controller 를 선택함
+	> 자동으로 import 구문이 추가됨
+	  import org.springframework.stereotype.conroller;
+
+ => 메서드에 대한 애노테이션 추가함
+	> 클래스 {} 안에서 @Req 입력하고, ctrl + space
+	> @RequestMapping 을 선택함
+	> 자동으로 import 구문이 추가됨
+	  import org.springframework.web.bind.annotation.RequestMapping;
+
+	> 메소드 작성함
+
+//**************************************
+@RequestMapping("helloWorld")
+public String helloWorld(Model model)
+{
+	model.addAttribute("message", "Hello World Spring!!!");
+	return "helloWorld";
+}
+//***************************************
+
+3. 웹 애플리케이션 환경 설정 파일에서 스프링 환경설정파일 지정함
+ => web.xml 파일에 추가함
+
+//web.xml ****************************
+<servlet>
+  <servlet-name>dispatcher</servlet-name>
+  <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+  <load-on-startup>1</load-on-startup>
+  </servlet>
+<servlet-mapping>
+  <servlet-name>dispatcher</servlet-name>
+  <url-pattern>*.do</url-pattern>
+</servlet-mapping>
+
+
+</web-app>
+//***************************************
+
+ => servlet-name 을 dispatcher 라고 지정했으면, 반드시 스프링 설정
+	파일명은 dispatcher-servlet.xml 로 생성하고, WEB-INF 폴더
+	아래에 저장한다.
+	> WEB-INF 폴더 위에서 마우스 오른쪽 클릭
+	> NEW > OTHER > SPRING 
+	> Spring Bean Configuration File 선택
+	> 파일명 : dispatcher-servlet.xml 입력
+	> next > 저장위치 : WEB-INF 로 지정 > next
+	> XSD namespace 에서
+	  beans, context, p 를 선택하고
+	> 아래에서 첫번째 url 선택하고 > finish
+ => xml 파일의 기본 문서가 나타남
+	> 문서 하단의 'beans' 탭 클릭
+	> beans 뷰에서 'New Bean...' 버튼 클릭
+	> 'bean Definition' 창에서 Class 항목의 'Browse...' 선택
+	> 핸들러 매핑에 사용할 스프링 클래스명의 첫글자 몇개를 입력해봄
+	  De
+	> 스프링이 제공하는 매칭 아이템 중에	  	  org.springframework.web.servlet.mvc.annotation.
+		DefaultAnnotationHandleMapping 를 선택함
+	> Class 항목의 빈이름 확인하고, finish
+	> 뷰의 왼쪽에 빈이 추가된다.
+	> 같은 방법으로 빈을 하나 더 추가한다
+	  Ann
+	  org.springframework.web.servlet.mvc.annotation.
+		AnnotationMethodHandlerAdapter
+
+//**************************
+<bean
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+	</bean>
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	</bean>
+//*************************
+
+ => context 탭 클릭
+	> 컨트롤러의 기본 패키지를 지정하기 위해 사용함
+	> context 뷰에서
+	  왼쪽의 beans 위에서 마우스 오른쪽 클릭함
+	> 팝업창에서 insert <context-component-scan> element 선택함
+	> 오른쪽에서 
+	  base-package 에 hello.controller 입력함
+
+//****************************
+<context:component-scan base-package="hello.controller">
+</context:component-scan>
+//*****************************
+
+ => beans 탭에서 뷰리졸버 클래스와 하위 엘리먼트 지정함
+	> 'New bean...' 버튼 클릭
+	> Class : UrlBasedViewResolver
+	  (org.springframework.web.servlet.view.UrlBasedviewresolver)
+	> 왼쪽에서 방금 생성된 'bean' 위에서 마우스 오른쪽 클릭
+	> insert <property> element 선택
+	> 오른쪽에서
+	  name : viewClass
+	  value : 'Browse...' 버튼 클릭
+		JstlView 검색해서 선택
+	> 같은 방법으로
+	  name : prefix, value : (뷰로 사용할 파일의 경로명 입력)
+				/WEB-INF/views/hello/
+	> name : suffix, value : .jsp
+//***************************
+<bean
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+	<property name="viewClass"
+		value="org.springframework.web.servlet.view.JstlView">
+	</property>
+	<property name="prefix" value="/WEB-INF/views/hello/"></property>
+	<property name="suffix" value=".jsp"></property>
+	
+</bean>
+//*****************************
+ => 저장하고 닫기
+
+//---------------------------------------------------
+4. 뷰 폴더와 뷰파일 생성
+ => 환경설정 파일에 지정한 내용대로 폴더 작성함
+	WEB-INF/views/hello
+ => jsp 파일 생성함
+	파일명 : helloWorld.jsp
+	> model에 저장한 값을 꺼내서 출력함
+
+//**********************
+<body>
+	<h3>${message }</h3>
+</body>
+//***************************
+
+ => WebContent 폴더 아래에 index.jsp 추가함
+	> body 영역 안에 앵커 추가함
+
+//*****************
+<a href="helloWorld.do">헬로우월드 실행</a>
+//*****************
+
+ => 호출할 컨트롤러의 매핑이름 뒤에 '.do' 를 붙임
+	> web.xml 로 가서 *.do 확인하고 맞으면
+	  디스패처로 넘어감
+	> 디스패처 서블릿의 지정된 컨트롤러 패키지에 있는
+	  클래스들 중에서 매핑이름이 지정된 메소드를 찾아서
+	> 요청 정보를 매개변수 model 로 넘김
+	> 컨트롤러가 서비스 요청을 처리하고, 뷰를 선택해서 리턴함
+	> 선택된 뷰(jsp 파일)가 클라이언트에게 전송됨
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
